@@ -1,19 +1,24 @@
 package mx.florinda;
 
-import com.google.gson.Gson;
-
-import java.math.BigDecimal;
-import static mx.florinda.ItemCardapio.CategoriaCardapio.BEBIDAS;
+import java.util.List;
 
 public class Main {
     static void main() {
-        ItemCardapio refrescoDoChaves = new ItemCardapio(1l, "Refresco do Chaves", """
-                Suco de limão, que parece tamarindo ma tem gosto de groselha
-                """, BEBIDAS, new BigDecimal("2.99"), null);
+       Database database = new Database();
 
-        Gson gson = new Gson();
-        String json = gson.toJson(refrescoDoChaves);
+       List<ItemCardapio> itens = database.listaDeItensCardapio();
 
-        System.out.println(json);
+       for (ItemCardapio item : itens){
+           System.out.println(item);
+       }
+
+       ItemCardapio itemCardapio = itens.get(4);
+        System.out.println(itemCardapio.nome());
+
+        System.out.println(itens.size());
+        itens.remove(1);
+        System.out.println(itens.size());
+
+        itens.forEach(System.out::println);
     }
 }
