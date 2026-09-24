@@ -8,7 +8,7 @@ public class Main {
        Database database = new Database();
        List<ItemCardapio> itens = database.listaDeItensCardapio();
 
-       Map<ItemCardapio.CategoriaCardapio, Integer> itensPorCategoria = new LinkedHashMap<>();
+       Map<ItemCardapio.CategoriaCardapio, Integer> itensPorCategoria = new TreeMap<>();
        for(ItemCardapio item : itens){
           ItemCardapio.CategoriaCardapio categoria = item.categoria();
           if(!itensPorCategoria.containsKey(categoria)){
@@ -26,7 +26,7 @@ public class Main {
         itens.stream()
                 .collect(Collectors.groupingBy(
                         ItemCardapio::categoria,
-                        LinkedHashMap::new,
+                        TreeMap::new,
                         Collectors.counting()
                 ))
                 .forEach((chave, valor)-> System.out.println(chave + "->" + valor));
