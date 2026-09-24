@@ -8,24 +8,26 @@ public class Main {
        Database database = new Database();
        List<ItemCardapio> itens = database.listaDeItensCardapio();
 
-       Comparator<ItemCardapio.CategoriaCardapio> comparadorPorNome = Comparator
-               .comparing(ItemCardapio.CategoriaCardapio::name);
+       Map<ItemCardapio.CategoriaCardapio, Integer> itensPorCategoria = new HashMap<>();
+       for(ItemCardapio item : itens){
+          ItemCardapio.CategoriaCardapio categoria = item.categoria();
+          if(!itensPorCategoria.containsKey(categoria)){
+              itensPorCategoria.put(categoria,1);
+          } else{
+             Integer quantidadeAnterior = itensPorCategoria.get(categoria);
+             itensPorCategoria.put(categoria, quantidadeAnterior +1);
+          }
+       }
 
-       Set<ItemCardapio.CategoriaCardapio> categorias = new TreeSet<>(comparadorPorNome);
+        System.out.println(itensPorCategoria);
 
-        for(ItemCardapio item : itens){
-            ItemCardapio.CategoriaCardapio categoria = item.categoria();
-            categorias.add(categoria);
-        }
-        for(ItemCardapio.CategoriaCardapio categoria : categorias){
-            System.out.println(categoria);
-        }
+        System.out.println("-------");
 
-        System.out.println("-----");
         itens.stream()
-                .map(ItemCardapio::categoria)
-                //.collect(Collectors.toCollection(TreeSet::new)) // ordem natural que foi listada no enum
-                .collect(Collectors.toCollection(()-> new TreeSet<>(comparadorPorNome))) // ordena pelo nome
-                .forEach(System.out::println);
+                .collect(Collectors.groupingBy(
+                        ItemCardapio::categoria,
+                        Collectors.counting()
+                ))
+                .forEach((chave, valor)-> System.out.println(chave + "->" + valor));
     }
 }
