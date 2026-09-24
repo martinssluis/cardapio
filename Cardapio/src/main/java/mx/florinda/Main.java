@@ -12,19 +12,11 @@ public class Main {
        List<ItemCardapio> itens = database.listaDeItensCardapio();
 
         Set<ItemCardapio.CategoriaCardapio> categorias = new LinkedHashSet<>();
-        //        forma mais verbosa
-//        for(ItemCardapio item : itens){
-//            ItemCardapio.CategoriaCardapio categoria = item.categoria();
-//            categorias.add(categoria);
-//        }
-//        for(ItemCardapio.CategoriaCardapio categoria : categorias){
-//            System.out.println(categoria);
-//        }
 
         //forma abreviada
         itens.stream()
                 .map(ItemCardapio::categoria)
-                .collect(Collectors.toSet())
+                .collect(Collectors.toCollection(LinkedHashSet::new))
                 .forEach(System.out::println);
     }
 }
