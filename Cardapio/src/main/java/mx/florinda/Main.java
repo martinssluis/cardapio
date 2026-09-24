@@ -1,9 +1,6 @@
 package mx.florinda;
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -11,12 +8,24 @@ public class Main {
        Database database = new Database();
        List<ItemCardapio> itens = database.listaDeItensCardapio();
 
-        Set<ItemCardapio.CategoriaCardapio> categorias = new LinkedHashSet<>();
+       Comparator<ItemCardapio.CategoriaCardapio> comparadorPorNome = Comparator
+               .comparing(ItemCardapio.CategoriaCardapio::name);
 
-        //forma abreviada
+       Set<ItemCardapio.CategoriaCardapio> categorias = new TreeSet<>(comparadorPorNome);
+
+        for(ItemCardapio item : itens){
+            ItemCardapio.CategoriaCardapio categoria = item.categoria();
+            categorias.add(categoria);
+        }
+        for(ItemCardapio.CategoriaCardapio categoria : categorias){
+            System.out.println(categoria);
+        }
+
+        System.out.println("-----");
         itens.stream()
                 .map(ItemCardapio::categoria)
-                .collect(Collectors.toCollection(LinkedHashSet::new))
+                //.collect(Collectors.toCollection(TreeSet::new)) // ordem natural que foi listada no enum
+                .collect(Collectors.toCollection(()-> new TreeSet<>(comparadorPorNome))) // ordena pelo nome
                 .forEach(System.out::println);
     }
 }
