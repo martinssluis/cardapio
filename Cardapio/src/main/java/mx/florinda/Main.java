@@ -1,24 +1,29 @@
 package mx.florinda;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Main {
     static void main() {
        Database database = new Database();
-
        List<ItemCardapio> itens = database.listaDeItensCardapio();
 
-       for (ItemCardapio item : itens){
-           System.out.println(item);
-       }
+        Set<ItemCardapio.CategoriaCardapio> categorias = new HashSet<>();
+        //        forma mais verbosa
+//        for(ItemCardapio item : itens){
+//            ItemCardapio.CategoriaCardapio categoria = item.categoria();
+//            categorias.add(categoria);
+//        }
+//        for(ItemCardapio.CategoriaCardapio categoria : categorias){
+//            System.out.println(categoria);
+//        }
 
-       ItemCardapio itemCardapio = itens.get(4);
-        System.out.println(itemCardapio.nome());
-
-        System.out.println(itens.size());
-        itens.remove(1);
-        System.out.println(itens.size());
-
-        itens.forEach(System.out::println);
+        //forma abreviada
+        itens.stream()
+                .map(ItemCardapio::categoria)
+                .collect(Collectors.toSet())
+                .forEach(System.out::println);
     }
 }
