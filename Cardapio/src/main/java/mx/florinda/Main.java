@@ -1,6 +1,7 @@
 package mx.florinda;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -10,7 +11,7 @@ public class Main {
        Database database = new Database();
        List<ItemCardapio> itens = database.listaDeItensCardapio();
 
-        Set<ItemCardapio.CategoriaCardapio> categorias = new HashSet<>();
+        Set<ItemCardapio.CategoriaCardapio> categorias = new LinkedHashSet<>();
         //        forma mais verbosa
 //        for(ItemCardapio item : itens){
 //            ItemCardapio.CategoriaCardapio categoria = item.categoria();
