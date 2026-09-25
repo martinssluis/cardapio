@@ -5,30 +5,21 @@ import java.util.stream.Collectors;
 
 public class Main {
     static void main() {
-       Database database = new Database();
-       List<ItemCardapio> itens = database.listaDeItensCardapio();
+        Database database = new Database();
+        List<ItemCardapio> itens = database.listaDeItensCardapio();
+        itens.forEach(System.out::println);
 
-       Map<ItemCardapio.CategoriaCardapio, Integer> itensPorCategoria = new TreeMap<>();
-       for(ItemCardapio item : itens){
-          ItemCardapio.CategoriaCardapio categoria = item.categoria();
-          if(!itensPorCategoria.containsKey(categoria)){
-              itensPorCategoria.put(categoria,1);
-          } else{
-             Integer quantidadeAnterior = itensPorCategoria.get(categoria);
-             itensPorCategoria.put(categoria, quantidadeAnterior +1);
-          }
-       }
+        System.out.println("--------");
 
-        System.out.println(itensPorCategoria);
+        Optional<ItemCardapio> optionalItem = database.itemCardapioPorId(6L);
+        String mensagem = optionalItem.map(ItemCardapio::toString).orElse("Não encontrado");
+        System.out.println(mensagem);
 
-        System.out.println("-------");
-
-        itens.stream()
-                .collect(Collectors.groupingBy(
-                        ItemCardapio::categoria,
-                        TreeMap::new,
-                        Collectors.counting()
-                ))
-                .forEach((chave, valor)-> System.out.println(chave + "->" + valor));
+        if (optionalItem.isPresent()) {
+            ItemCardapio item = optionalItem.get();
+            System.out.println(item);
+        } else{
+            System.out.println("Não encontrado");
+        }
     }
 }
