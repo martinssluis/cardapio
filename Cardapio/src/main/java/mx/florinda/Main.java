@@ -1,34 +1,19 @@
 package mx.florinda;
 
+import java.math.BigDecimal;
+
 public class Main {
     static void main() throws InterruptedException {
         Database database = new Database();
 
-        HistoricoVisualizacao historico = new HistoricoVisualizacao(database);
-        historico.registrarVisualizacao(1l);
-        historico.registrarVisualizacao(2l);
-        historico.registrarVisualizacao(4l);
-        historico.registrarVisualizacao(6l);
+        // precisa alterar o preço de um item1 do cardapio
 
-        historico.mostrarTotalVitualizados();
-        historico.listaVisualizacoes();
+        ItemCardapio item = database.itemCardapioPorId(1L).orElseThrow();
+        System.out.printf("\n%s (%d) R$ $%s", item.nome(), item.id(), item.preco());
 
-        Long idParaRemover = 1L;
-        boolean removido = database.removerItemCardapio(idParaRemover);
+       database.alterarPrecoItemCardapio(1L, new BigDecimal("3.99"));
+        ItemCardapio item1 = database.itemCardapioPorId(1L).orElseThrow();
+        System.out.printf("\n%s (%d) R$ $%s", item1.nome(), item1.id(), item1.preco());
 
-        if (removido){
-            System.out.println("Item removido: " + idParaRemover);
-        } else{
-            System.out.println("Item não encontrado: " + idParaRemover);
-        }
-
-        database.listaDeItensCardapio().forEach(System.out::println);
-
-        System.out.println("Solicitando garbage collector ...");
-        System.gc();
-        Thread.sleep(500);
-
-        historico.mostrarTotalVitualizados();
-        historico.listaVisualizacoes();
     }
 }
