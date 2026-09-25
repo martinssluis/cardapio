@@ -71,7 +71,7 @@ public class Database {
     public void imprimirRastroAuditoriaPrecos(){
         System.out.println("\n Auditoria de preços");
         auditoriaPrecos.forEach((itemAntigo, novoPreco)->
-                System.out.printf("- %s: %s => %s", itemAntigo.nome(), itemAntigo.preco(), novoPreco));
+                System.out.printf("- %s: %s => %s\n", itemAntigo.nome(), itemAntigo.preco(), novoPreco));
         System.out.println();
     }
 }
