@@ -14,6 +14,9 @@ public class Main {
        database.alterarPrecoItemCardapio(1L, new BigDecimal("3.99"));
         ItemCardapio item1 = database.itemCardapioPorId(1L).orElseThrow();
         System.out.printf("\n%s (%d) R$ $%s", item1.nome(), item1.id(), item1.preco());
+        
+        // precis auditar as mudanças de preco de itens do cardapio
+        database.imprimirRastroAuditoriaPrecos();
 
     }
 }
