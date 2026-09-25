@@ -7,7 +7,7 @@ import static mx.florinda.ItemCardapio.CategoriaCardapio.*;
 
 public class Database {
 
-    private Map<Long, ItemCardapio> itensPorId = new HashMap<>();
+    private final Map<Long, ItemCardapio> itensPorId = new HashMap<>();
 
     public Database() {
         var refrescoDoChaves = new ItemCardapio(1L, "Refresco do Chaves",
