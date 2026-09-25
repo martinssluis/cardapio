@@ -55,4 +55,14 @@ public class Database {
         ItemCardapio itemCardapioRemovido = itensPorId.remove(itemId);
         return itemCardapioRemovido!= null;
     }
+
+    public boolean alterarPrecoItemCardapio(Long itemId, BigDecimal novoPreco) {
+        ItemCardapio itemCardapio = itensPorId.get(itemId);
+        if (itemId == null){
+            return false;
+        }
+        ItemCardapio itemComPrecoAlterado = itemCardapio.alterarPreco(novoPreco);
+        itensPorId.put(itemId, itemComPrecoAlterado);
+        return true;
+    }
 }
