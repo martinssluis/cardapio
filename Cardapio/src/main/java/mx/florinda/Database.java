@@ -50,4 +50,9 @@ public class Database {
         ItemCardapio itemCardapio = itensPorId.get(itemID);
         return Optional.ofNullable(itemCardapio);
     }
+
+    public boolean removerItemCardapio(Long itemId) {
+        ItemCardapio itemCardapioRemovido = itensPorId.remove(itemId);
+        return itemCardapioRemovido!= null;
+    }
 }
