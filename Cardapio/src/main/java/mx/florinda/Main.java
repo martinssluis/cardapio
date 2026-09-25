@@ -1,7 +1,7 @@
 package mx.florinda;
 
 public class Main {
-    static void main() {
+    static void main() throws InterruptedException {
         Database database = new Database();
 
         HistoricoVisualizacao historico = new HistoricoVisualizacao(database);
@@ -23,5 +23,12 @@ public class Main {
         }
 
         database.listaDeItensCardapio().forEach(System.out::println);
+
+        System.out.println("Solicitando garbage collector ...");
+        System.gc();
+        Thread.sleep(500);
+
+        historico.mostrarTotalVitualizados();
+        historico.listaVisualizacoes();
     }
 }
