@@ -115,6 +115,8 @@ public class ServidorItensCardapioComSocket {
                 Gson gson = new Gson();
                 ItemCardapio novoItemCardapio = gson.fromJson(body, ItemCardapio.class);
 
+                System.out.println(novoItemCardapio);
+
                 database.adicionaItemCardapio(novoItemCardapio);
 
                 clientOUt.println("HTTP/1.1 201 Created");
