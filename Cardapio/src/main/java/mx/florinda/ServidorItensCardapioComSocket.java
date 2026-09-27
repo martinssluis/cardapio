@@ -1,6 +1,5 @@
 package mx.florinda;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -8,17 +7,21 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ServidorItensCardapioComSocket {
     static void main() throws Exception {
 
-        try (ServerSocket serverSocket = new ServerSocket(8000)) {
-            System.out.println("Subiu o servidor!");
+        try (ExecutorService executorService = Executors.newFixedThreadPool(50)) { // limitar número de threads com pool de threads
 
-            while (true) {
-                Socket clientScoket = serverSocket.accept();
-                Thread thread = new Thread(() -> trataRequisicao(clientScoket));
-                thread.start();
+            try (ServerSocket serverSocket = new ServerSocket(8000)) {
+                System.out.println("Subiu o servidor!");
+
+                while (true) {
+                    Socket clientScoket = serverSocket.accept();
+                    executorService.execute(() -> trataRequisicao(clientScoket));
+                }
             }
         }
     }
