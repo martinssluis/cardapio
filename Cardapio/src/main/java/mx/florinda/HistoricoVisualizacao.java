@@ -7,11 +7,11 @@ import java.util.WeakHashMap;
 
 public class HistoricoVisualizacao {
 
-    private final InMemoryDatabase database;
+    private final Database database;
 
     private final Map<ItemCardapio, LocalDateTime> visualizacoes = new WeakHashMap<>();
 
-    public HistoricoVisualizacao(InMemoryDatabase database){
+    public HistoricoVisualizacao(Database database){
         this.database = database;
     }
 
