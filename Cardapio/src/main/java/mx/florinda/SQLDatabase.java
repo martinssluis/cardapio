@@ -63,6 +63,25 @@ public class SQLDatabase implements Database {
 
     @Override
     public void adicionaItemCardapio(ItemCardapio itemCardapio) {
+        String sql = "INSERT INTO item_cardapio (id, nome, descricao, categoria, preco, preco_promocional) " +
+                "VALUES (?, ?,?,?,?,?)";
+
+        try (
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/cardapio", "root", "senha123");
+                PreparedStatement ps = connection.prepareStatement(sql)) {
+
+
+            ps.setLong(1, itemCardapio.id());
+            ps.setString(2, itemCardapio.nome());
+            ps.setString(3, itemCardapio.descricao());
+            ps.setString(4, itemCardapio.categoria().name());
+            ps.setBigDecimal(5, itemCardapio.preco());
+            ps.setBigDecimal(6, itemCardapio.precoComDesconto());
+            ps.execute();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
