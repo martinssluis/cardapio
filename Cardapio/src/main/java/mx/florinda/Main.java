@@ -12,5 +12,8 @@ public class Main {
 
         List<ItemCardapio> listaItensCardapio = database.listaDeItensCardapio();
         listaItensCardapio.forEach(System.out::println);
+
+        int total = database.totalItensCardapio();
+        System.out.println(total);
     }
 }
