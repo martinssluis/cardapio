@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 
 import static mx.florinda.ItemCardapio.CategoriaCardapio.*;
 
-public class InMemoryDatabase {
+public class InMemoryDatabase implements Database {
 
     private final Map<Long, ItemCardapio> itensPorId = new ConcurrentSkipListMap<>();
     private final Map<ItemCardapio, BigDecimal> auditoriaPrecos = new IdentityHashMap<>();
@@ -43,21 +43,25 @@ public class InMemoryDatabase {
         itensPorId.put(9L, churrosDoChaves);
     }
 
+    @Override
     public List<ItemCardapio> listaDeItensCardapio() {
         return new ArrayList<>(itensPorId.values());
 
     }
 
+    @Override
     public Optional<ItemCardapio> itemCardapioPorId(Long itemID){
         ItemCardapio itemCardapio = itensPorId.get(itemID);
         return Optional.ofNullable(itemCardapio);
     }
 
+    @Override
     public boolean removerItemCardapio(Long itemId) {
         ItemCardapio itemCardapioRemovido = itensPorId.remove(itemId);
         return itemCardapioRemovido!= null;
     }
 
+    @Override
     public boolean alterarPrecoItemCardapio(Long itemId, BigDecimal novoPreco) {
         ItemCardapio itemAntigo = itensPorId.get(itemId);
         if (itemId == null){
@@ -69,6 +73,11 @@ public class InMemoryDatabase {
         return true;
     }
 
+    @Override
+    public int totalItensCardapio() {
+        return itensPorId.size();
+    }
+
     public void imprimirRastroAuditoriaPrecos(){
         System.out.println("\n Auditoria de preços");
         auditoriaPrecos.forEach((itemAntigo, novoPreco)->
@@ -76,6 +85,7 @@ public class InMemoryDatabase {
         System.out.println();
     }
 
+    @Override
     public void adicionaItemCardapio(ItemCardapio itemCardapio){
         itensPorId.put(itemCardapio.id(), itemCardapio);
     }
