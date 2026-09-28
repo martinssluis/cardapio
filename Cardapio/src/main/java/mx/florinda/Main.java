@@ -6,7 +6,7 @@ import static mx.florinda.ItemCardapio.CategoriaCardapio.BEBIDAS;
 
 public class Main {
     static void main() throws InterruptedException {
-        Database database = new Database();
+        InMemoryDatabase database = new InMemoryDatabase();
 
         // precisa alterar o preço de um item1 do cardapio
 
