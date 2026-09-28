@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class SQLDatabase implements Database{
+public class SQLDatabase implements Database {
 
     @Override
     public List<ItemCardapio> listaDeItensCardapio() {
@@ -18,9 +18,9 @@ public class SQLDatabase implements Database{
                 Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/cardapio", "root", "senha123");
                 PreparedStatement ps = connection.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery()
-        ){
+        ) {
 
-            while(rs.next()){
+            while (rs.next()) {
                 long id = rs.getLong("id");
                 String nome = rs.getString("nome");
                 String descricao = rs.getString("descricao");
@@ -42,7 +42,23 @@ public class SQLDatabase implements Database{
 
     @Override
     public int totalItensCardapio() {
-        return 0;
+        String sql = "SELECT count(*) FROM item_cardapio";
+
+        try (
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/cardapio", "root", "senha123");
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()
+        ) {
+
+            int total = 0;
+            if (rs.next()) {
+                total = rs.getInt(1);
+            }
+            return total;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
