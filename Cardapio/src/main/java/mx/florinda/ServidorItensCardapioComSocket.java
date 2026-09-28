@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ServidorItensCardapioComSocket {
-    private static final Database database = new InMemoryDatabase();
+    private static final Database database = new SQLDatabase();
 
     static void main() throws Exception {
 
