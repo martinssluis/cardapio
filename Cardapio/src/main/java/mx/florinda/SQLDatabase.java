@@ -14,11 +14,11 @@ public class SQLDatabase implements Database{
 
         String sql = "SELECT id, nome, descricao, categoria, preco, preco_promocional FROM item_cardapio";
 
-        try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/cardapio", "root", "senha123");
-
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+        try (
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/cardapio", "root", "senha123");
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()
+        ){
 
             while(rs.next()){
                 long id = rs.getLong("id");
