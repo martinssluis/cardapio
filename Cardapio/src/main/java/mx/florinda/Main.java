@@ -17,8 +17,10 @@ public class Main {
         int total = database.totalItensCardapio();
         System.out.println(total);
 
-        var novoItemCardapio = new ItemCardapio(10L, "Tacos de Carnitas", "Tacos recheados com carne tenra", PRATOS_PRINCIPAIS, new BigDecimal("25.9"), null);
+//        var novoItemCardapio = new ItemCardapio(10L, "Tacos de Carnitas", "Tacos recheados com carne tenra", PRATOS_PRINCIPAIS, new BigDecimal("25.9"), null);
+//
+//        database.adicionaItemCardapio(novoItemCardapio);
 
-        database.adicionaItemCardapio(novoItemCardapio);
+        database.itemCardapioPorId(10L);
     }
 }
