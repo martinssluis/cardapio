@@ -126,7 +126,27 @@ public class SQLDatabase implements Database {
     }
 
     @Override
-    public boolean alterarPrecoItemCardapio(Long itemId, BigDecimal novoPreco) {
-        throw new UnsupportedOperationException("TODO");
+    public boolean alterarPrecoItemCardapio(Long id, BigDecimal novoPreco) {
+
+        String sql = "UPDATE item_cardapio SET preco = ? WHERE id = ?";
+
+        try(
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/cardapio", "root", "senha123");
+                PreparedStatement ps = connection.prepareStatement(sql);
+        ){
+            ps.setBigDecimal(1, novoPreco);
+            ps.setLong(2, id);
+
+            int linhasAfetadas = ps.executeUpdate();
+            if (linhasAfetadas > 0) {
+                Optional<ItemCardapio> itemCardapioComValorAlterado = itemCardapioPorId(id);
+                System.out.println(itemCardapioComValorAlterado);
+                return true;
+            }
+            return false;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }
