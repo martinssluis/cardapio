@@ -77,7 +77,6 @@ public class SQLDatabase implements Database {
             ps.setString(4, itemCardapio.categoria().name());
             ps.setBigDecimal(5, itemCardapio.preco());
             ps.setBigDecimal(6, itemCardapio.precoComDesconto());
-            ps.execute();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -87,8 +86,38 @@ public class SQLDatabase implements Database {
 
     //TODO -----------------------------------------------------------------------
     @Override
-    public Optional<ItemCardapio> itemCardapioPorId(Long itemID) {
-        throw new UnsupportedOperationException("TODO");
+    public Optional<ItemCardapio> itemCardapioPorId(Long id) {
+        String sql = "SELECT id, nome, descricao, categoria, preco, preco_promocional FROM item_cardapio WHERE id= ?";
+
+        try (
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/cardapio", "root", "senha123");
+                PreparedStatement ps = connection.prepareStatement(sql);
+
+        ) {
+
+            ps.setLong(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    id = rs.getLong("id");
+                    String nome = rs.getString("nome");
+                    String descricao = rs.getString("descricao");
+                    String categoriaStr = rs.getString("categoria");
+                    BigDecimal preco = rs.getBigDecimal("preco");
+                    BigDecimal precoPromocional = rs.getBigDecimal("preco_promocional");
+
+                    ItemCardapio.CategoriaCardapio categoria = ItemCardapio.CategoriaCardapio.valueOf(categoriaStr);
+                    var itemCardapio = new ItemCardapio(id, nome, descricao, categoria, preco, precoPromocional);
+                    System.out.println(itemCardapio);
+
+                    return Optional.of(itemCardapio);
+                }
+                return Optional.empty();
+
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException();
+        }
     }
 
     @Override
