@@ -22,5 +22,6 @@ public class Main {
 //        database.adicionaItemCardapio(novoItemCardapio);
 
         database.itemCardapioPorId(10L);
+        database.alterarPrecoItemCardapio(10L, new BigDecimal("1.99"));
     }
 }
