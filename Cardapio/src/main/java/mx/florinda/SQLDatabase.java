@@ -77,6 +77,7 @@ public class SQLDatabase implements Database {
             ps.setString(4, itemCardapio.categoria().name());
             ps.setBigDecimal(5, itemCardapio.preco());
             ps.setBigDecimal(6, itemCardapio.precoComDesconto());
+            ps.execute();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -122,7 +123,27 @@ public class SQLDatabase implements Database {
 
     @Override
     public boolean removerItemCardapio(Long itemId) {
-        throw new UnsupportedOperationException("TODO");
+        String sql = "DELETE FROM item_cardapio WHERE id = ?;";
+
+        try (
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/cardapio", "root", "senha123");
+                PreparedStatement ps = connection.prepareStatement(sql);
+        ) {
+
+            ps.setLong(1, itemId);
+
+            int linhaDeletada = ps.executeUpdate();
+            if (linhaDeletada>0){
+                System.out.println("Item deletado!");
+                listaDeItensCardapio();
+                return true;
+            }
+            System.out.println("Não foi possível deletar o item!");
+            return false;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
