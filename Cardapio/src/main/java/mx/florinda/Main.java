@@ -20,8 +20,9 @@ public class Main {
 //        var novoItemCardapio = new ItemCardapio(10L, "Tacos de Carnitas", "Tacos recheados com carne tenra", PRATOS_PRINCIPAIS, new BigDecimal("25.9"), null);
 //
 //        database.adicionaItemCardapio(novoItemCardapio);
-
+//
         database.itemCardapioPorId(10L);
         database.alterarPrecoItemCardapio(10L, new BigDecimal("1.99"));
+        database.removerItemCardapio(10L);
     }
 }
