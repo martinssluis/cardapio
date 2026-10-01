@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -120,7 +121,30 @@ public class ServidorItensCardapioComSocket {
                 database.adicionaItemCardapio(novoItemCardapio);
 
                 clientOUt.println("HTTP/1.1 201 Created");
-            }else{
+
+            } else if (method.equals("GET") && requestURI.startsWith("/itens-cardapio/")) {
+                System.out.println("Procurando um item pelo id");
+
+                String idTexto = requestURI.substring("/itens-cardapio/".length());
+                long id = Long.parseLong(idTexto);
+
+
+                Optional<ItemCardapio> itemCardapioPorId = database.itemCardapioPorId(id);
+                System.out.println(itemCardapioPorId);
+
+                if (itemCardapioPorId.isPresent()){
+                    String json = new Gson().toJson(itemCardapioPorId.get());
+
+                    clientOUt.println("HTTP/1.1 200 ok");
+                    clientOUt.println("Content-type: application/json; charset=UTF-8");
+                    clientOUt.println();
+                    clientOUt.println(json);
+                }else {
+                    clientOUt.println("HTTP/1.1 404 Not Found");
+                }
+
+
+            } else{
                 System.out.println("URI não encontrada: " + request);
                 clientOUt.println("HTTP/1.1 404 Not Found");
             }
