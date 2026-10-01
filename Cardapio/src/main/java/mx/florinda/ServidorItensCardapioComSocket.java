@@ -162,7 +162,19 @@ public class ServidorItensCardapioComSocket {
                     clientOUt.println("HTTP/1.1 404 Not Found");
                 }
 
-            } else{
+            } else if (method.equals("DELETE") && requestURI.startsWith("/itens-cardapio/")){
+                System.out.println("Deletando item");
+
+                String idTexto = requestURI.substring("/itens-cardapio/".length());
+                long id = Long.parseLong(idTexto);
+
+                if (database.removerItemCardapio(id)){
+                    clientOUt.println("HTTP/1.1 200 OK");
+                } else {
+                    clientOUt.println("HTTP/1.1 404 Not Found");
+                }
+            }
+            else{
                 System.out.println("URI não encontrada: " + request);
                 clientOUt.println("HTTP/1.1 404 Not Found");
             }
