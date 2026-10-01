@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.math.BigDecimal;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
@@ -139,10 +140,27 @@ public class ServidorItensCardapioComSocket {
                     clientOUt.println("Content-type: application/json; charset=UTF-8");
                     clientOUt.println();
                     clientOUt.println(json);
-                }else {
+                } else {
                     clientOUt.println("HTTP/1.1 404 Not Found");
                 }
+            }else if (method.equals("PATCH") && requestURI.startsWith("/itens-cardapio/")) {
+                System.out.println("Alterando valor pelo id");
 
+                String idTexto = requestURI.substring("/itens-cardapio/".length());
+                long id = Long.parseLong(idTexto);
+
+                String body = requestChunks[1];
+                ItemCardapio itemRecebido = new Gson().fromJson(body, ItemCardapio.class);
+
+                BigDecimal preco = itemRecebido.preco();
+
+                if (database.alterarPrecoItemCardapio(id, preco)) {
+                    System.out.println("Valor alterado");
+                    clientOUt.println("HTTP/1.1 200 OK");
+                } else {
+                    System.out.println("Não foi possível alterar o valor do item desejado");
+                    clientOUt.println("HTTP/1.1 404 Not Found");
+                }
 
             } else{
                 System.out.println("URI não encontrada: " + request);
