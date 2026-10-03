@@ -149,47 +149,100 @@ public class ServidorItensCardapioComSocket {
                         clientOUt.println("HTTP/1.1 404 Not Found");
                     }
 
-            }else if (method.equals("PATCH") && requestURI.startsWith("/itens-cardapio/")) {
-                logger.fine("Alterando valor pelo id");
+                } else if (method.equals("PATCH") && requestURI.startsWith("/itens-cardapio/")) {
+                    logger.fine("Alterando valor pelo id");
 
-                String idTexto = requestURI.substring("/itens-cardapio/".length());
-                long id = Long.parseLong(idTexto);
+                    String idTexto = requestURI.substring("/itens-cardapio/".length());
+                    long id = Long.parseLong(idTexto);
 
-                String body = requestChunks[1];
-                ItemCardapio itemRecebido = new Gson().fromJson(body, ItemCardapio.class);
+                    String body = requestChunks[1];
+                    ItemCardapio itemRecebido = new Gson().fromJson(body, ItemCardapio.class);
 
-                BigDecimal preco = itemRecebido.preco();
+                    BigDecimal preco = itemRecebido.preco();
 
-                if (database.alterarPrecoItemCardapio(id, preco)) {
-                    logger.fine("Valor alterado");
-                    clientOUt.println("HTTP/1.1 200 OK");
+                    if (database.alterarPrecoItemCardapio(id, preco)) {
+                        logger.fine("Valor alterado");
+                        clientOUt.println("HTTP/1.1 200 OK");
+                    } else {
+                        logger.warning("Não foi possível alterar o valor do item desejado");
+                        clientOUt.println("HTTP/1.1 404 Not Found");
+                    }
+                } else if (method.equals("DELETE") && requestURI.startsWith("/itens-cardapio/")) {
+                    logger.fine("Deletando item");
+
+                    String idTexto = requestURI.substring("/itens-cardapio/".length());
+                    long id = Long.parseLong(idTexto);
+
+                    if (database.removerItemCardapio(id)) {
+                        clientOUt.println("HTTP/1.1 200 OK");
+                    } else {
+                        clientOUt.println("HTTP/1.1 404 Not Found");
+                    }
+                } else if (method.equals("GET") && requestURI.equals("/")) {
+
+                    List<ItemCardapio> listaDeItensCardapio = database.listaDeItensCardapio();
+
+
+                    StringBuilder htmlTodosItens = new StringBuilder();
+                    for (ItemCardapio item: listaDeItensCardapio){
+
+                        String htmlItem = """
+                                <article>
+                                 <kbd>%s</kbd>
+                                 <h3>%s</h3>
+                                 <p>%s</p>
+                                 <mark>Em promoção</mark> <strong>R$
+                                2,99</strong> <s>R$ 3,50</s>
+                                 </article>
+                                
+                                """.formatted(item.categoria().name(), item.nome(), item.descricao());
+                        htmlTodosItens.append(htmlItem);
+                    }
+
+                    String html = """
+                            <!DOCTYPE html>
+                            <html lang="en">
+                            <head>
+                             <meta charset="UTF-8">
+                             <title>Florinda Eats - Cardápio</title>
+                             <link rel="stylesheet"
+                             href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.1.1/css/pico.min.css">
+                            </head>
+                            <body>
+                             <header class="container">
+                             <hgroup>
+                             <h1>Florinda Eats</h1>
+                             <p>O sabor da Vila direto pra você</p>
+                             </hgroup>
+                             </header>
+                             
+                             %s
+                             
+                             <footer class="container">
+                             <p><small><em>Preços de acordo com 30 de Agosto de 2025 15:18</em></small></p>
+                             <p><strong>Florinda Eats</strong> Todos os direitos reservados - Agosto/2025</p>
+                             </footer>
+                            </body>
+                            </html>
+                            """.formatted(htmlTodosItens.toString());
+
+                    clientOUt.print("HTTP/1.1 200 ok\r\n");
+                    clientOUt.print("Content-type: text/html; charset=UTF-8\r\n\r\n");
+                    clientOUt.println(html);
+                    clientOUt.println("\r\n");
+
                 } else {
-                    logger.warning("Não foi possível alterar o valor do item desejado");
+                    logger.warning(() -> "URI não encontrada: " + request);
                     clientOUt.println("HTTP/1.1 404 Not Found");
                 }
-            } else if (method.equals("DELETE") && requestURI.startsWith("/itens-cardapio/")) {
-                logger.fine("Deletando item");
-
-                String idTexto = requestURI.substring("/itens-cardapio/".length());
-                long id = Long.parseLong(idTexto);
-
-                if (database.removerItemCardapio(id)) {
-                    clientOUt.println("HTTP/1.1 200 OK");
-                } else {
-                    clientOUt.println("HTTP/1.1 404 Not Found");
-                }
-            } else {
-                logger.warning(() -> "URI não encontrada: " + request);
-                clientOUt.println("HTTP/1.1 404 Not Found");
+            } catch (Exception ex) {
+                logger.log(Level.SEVERE, ex, () -> "Erro ao tratar " + method + " " + request);
+                clientOUt.println("HTTP/1.1 500 Internal Server Error");
+                clientOUt.println("");
+                clientOUt.println(ex.getMessage());
             }
-        }catch (Exception ex){
-            logger.log(Level.SEVERE, ex, ()-> "Erro ao tratar " + method + " " + request);
-            clientOUt.println("HTTP/1.1 500 Internal Server Error");
-            clientOUt.println("");
-            clientOUt.println(ex.getMessage());
-        }
 
-    } catch (Exception ex) {
+        } catch (Exception ex) {
             //logger.severe("Erro no servidor");
             logger.log(Level.SEVERE, "Erro no servidor", ex);//faz qualquer nível do logger
             throw new RuntimeException(ex);
