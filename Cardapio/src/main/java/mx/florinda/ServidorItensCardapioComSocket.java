@@ -185,17 +185,21 @@ public class ServidorItensCardapioComSocket {
 
                     StringBuilder htmlTodosItens = new StringBuilder();
                     for (ItemCardapio item: listaDeItensCardapio){
+                        String htmlPrecoItem;
+                        if (item.precoComDesconto() == null){
+                            htmlPrecoItem = "<strong>" + item.preco() + "</strong>";
+                        }else {
+                            htmlPrecoItem = "<mark>Em promoção</mark> <strong>" + item.precoComDesconto() + "</strong> <s>"+ item.preco() + "</s>";
+                        }
 
                         String htmlItem = """
                                 <article>
                                  <kbd>%s</kbd>
                                  <h3>%s</h3>
                                  <p>%s</p>
-                                 <mark>Em promoção</mark> <strong>R$
-                                2,99</strong> <s>R$ 3,50</s>
                                  </article>
                                 
-                                """.formatted(item.categoria().name(), item.nome(), item.descricao());
+                                """.formatted(item.categoria().name(), item.nome(), item.descricao(), htmlPrecoItem);
                         htmlTodosItens.append(htmlItem);
                     }
 
