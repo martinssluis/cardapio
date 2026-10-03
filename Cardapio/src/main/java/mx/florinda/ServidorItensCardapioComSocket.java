@@ -13,6 +13,9 @@ import java.nio.file.Path;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -190,6 +193,10 @@ public class ServidorItensCardapioComSocket {
                     Locale locale = requestURI.equals("/en") ? Locale.US : Locale.of("pt", "BR");
                     NumberFormat formatadorMoeda = NumberFormat.getCurrencyInstance(locale);
                     ResourceBundle mensagens = ResourceBundle.getBundle("mensagens", locale);
+                    DateTimeFormatter formatterDataHora = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG)
+                            .withLocale(locale);
+                    DateTimeFormatter formatterMesAno = DateTimeFormatter.ofPattern("MMMM/yyyy")
+                            .withLocale(locale);
 
 
 
@@ -212,7 +219,7 @@ public class ServidorItensCardapioComSocket {
                                  %s
                                  </article>
                                 
-                                """.formatted(categoria,item.categoria().name(), item.nome(), item.descricao(), htmlPrecoItem);
+                                """.formatted(categoria, item.nome(), item.descricao(), htmlPrecoItem);
                         htmlTodosItens.append(htmlItem);
                     }
 
@@ -241,7 +248,7 @@ public class ServidorItensCardapioComSocket {
                              </footer>
                             </body>
                             </html>
-                            """.formatted(htmlTodosItens.toString(), LocalDateTime.now(), YearMonth.now());
+                            """.formatted(htmlTodosItens.toString(), formatterDataHora.format(ZonedDateTime.now()), formatterMesAno.format(YearMonth.now()));
 
                     clientOUt.print("HTTP/1.1 200 ok\r\n");
                     clientOUt.print("Content-type: text/html; charset=UTF-8\r\n\r\n");
