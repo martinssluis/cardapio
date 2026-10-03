@@ -16,6 +16,7 @@ import java.time.YearMonth;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -188,6 +189,8 @@ public class ServidorItensCardapioComSocket {
 
                     Locale locale = requestURI.equals("/en") ? Locale.US : Locale.of("pt", "BR");
                     NumberFormat formatadorMoeda = NumberFormat.getCurrencyInstance(locale);
+                    ResourceBundle mensagens = ResourceBundle.getBundle("mensagens", locale);
+
 
 
                     StringBuilder htmlTodosItens = new StringBuilder();
@@ -199,6 +202,8 @@ public class ServidorItensCardapioComSocket {
                             htmlPrecoItem = "<mark>Em promoção</mark> <strong>" + formatadorMoeda.format(item.precoComDesconto()) + "</strong> <s>"+ formatadorMoeda.format(item.preco()) + "</s>";
                         }
 
+                        String categoria = mensagens.getString("categoria.cardapio." + item.categoria().name().toLowerCase());
+
                         String htmlItem = """
                                 <article>
                                  <kbd>%s</kbd>
@@ -207,7 +212,7 @@ public class ServidorItensCardapioComSocket {
                                  %s
                                  </article>
                                 
-                                """.formatted(item.categoria().name(), item.nome(), item.descricao(), htmlPrecoItem);
+                                """.formatted(categoria,item.categoria().name(), item.nome(), item.descricao(), htmlPrecoItem);
                         htmlTodosItens.append(htmlItem);
                     }
 
