@@ -10,7 +10,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.NumberFormat;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -178,18 +182,21 @@ public class ServidorItensCardapioComSocket {
                     } else {
                         clientOUt.println("HTTP/1.1 404 Not Found");
                     }
-                } else if (method.equals("GET") && requestURI.equals("/")) {
+                } else if (method.equals("GET") && (requestURI.equals("/")) || requestURI.equals("/en")) {
 
                     List<ItemCardapio> listaDeItensCardapio = database.listaDeItensCardapio();
+
+                    Locale locale = requestURI.equals("/en") ? Locale.US : Locale.of("pt", "BR");
+                    NumberFormat formatadorMoeda = NumberFormat.getCurrencyInstance(locale);
 
 
                     StringBuilder htmlTodosItens = new StringBuilder();
                     for (ItemCardapio item: listaDeItensCardapio){
                         String htmlPrecoItem;
                         if (item.precoComDesconto() == null){
-                            htmlPrecoItem = "<strong>" + item.preco() + "</strong>";
+                            htmlPrecoItem = "<strong>" + formatadorMoeda.format(item.preco()) + "</strong>";
                         }else {
-                            htmlPrecoItem = "<mark>Em promoção</mark> <strong>" + item.precoComDesconto() + "</strong> <s>"+ item.preco() + "</s>";
+                            htmlPrecoItem = "<mark>Em promoção</mark> <strong>" + formatadorMoeda.format(item.precoComDesconto()) + "</strong> <s>"+ formatadorMoeda.format(item.preco()) + "</s>";
                         }
 
                         String htmlItem = """
@@ -224,12 +231,12 @@ public class ServidorItensCardapioComSocket {
                              %s
                              
                              <footer class="container">
-                             <p><small><em>Preços de acordo com 30 de Agosto de 2025 15:18</em></small></p>
-                             <p><strong>Florinda Eats</strong> Todos os direitos reservados - Agosto/2025</p>
+                             <p><small><em>Preços de acordo com %s</em></small></p>
+                             <p><strong>Florinda Eats</strong> Todos os direitos reservados - %s</p>
                              </footer>
                             </body>
                             </html>
-                            """.formatted(htmlTodosItens.toString());
+                            """.formatted(htmlTodosItens.toString(), LocalDateTime.now(), YearMonth.now());
 
                     clientOUt.print("HTTP/1.1 200 ok\r\n");
                     clientOUt.print("Content-type: text/html; charset=UTF-8\r\n\r\n");
