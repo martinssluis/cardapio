@@ -197,6 +197,7 @@ public class ServidorItensCardapioComSocket {
                                  <kbd>%s</kbd>
                                  <h3>%s</h3>
                                  <p>%s</p>
+                                 %s
                                  </article>
                                 
                                 """.formatted(item.categoria().name(), item.nome(), item.descricao(), htmlPrecoItem);
