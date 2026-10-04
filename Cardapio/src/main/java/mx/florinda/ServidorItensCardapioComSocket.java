@@ -2,12 +2,11 @@ package mx.florinda;
 
 import com.google.gson.Gson;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.math.BigDecimal;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.NumberFormat;
@@ -68,7 +67,7 @@ public class ServidorItensCardapioComSocket {
             //Separando a request por pedaços - metodo e uri
             String[] requestChunks = request.split("\r\n\r\n");
             String requestLineAndHeaders = requestChunks[0];
-            String[] requestLineAndHeadersChunks = requestLineAndHeaders.split("\r\n\r\n");
+            String[] requestLineAndHeadersChunks = requestLineAndHeaders.split("\r\n");
             String requestLine = requestLineAndHeadersChunks[0];
             String[] requestLineChunks = requestLine.split(" ");
 
@@ -101,13 +100,33 @@ public class ServidorItensCardapioComSocket {
 
                     List<ItemCardapio> listaItensCardapiotemCardapios = database.listaDeItensCardapio();
 
-                    Gson gson = new Gson();
-                    String json = gson.toJson(listaItensCardapiotemCardapios);
+                    String mediaType = "application/json";
+                    for (int i = 1; i < requestLineAndHeadersChunks.length; i++) {
+                        String header = requestLineAndHeadersChunks[i];
+                        logger.fine(header);
 
-                    clientOUt.println("HTTP/1.1 200 OK");
-                    clientOUt.println("Content-type: application/json; charset=UTF-8");
-                    clientOUt.println();
-                    clientOUt.println(json);
+                        if(header.contains("Accept")){
+                            mediaType = header.replace("Accept: ", "");
+                            logger.info(mediaType);
+                        }
+                    }
+
+                    byte[] body;
+
+                    if ("application/x-java-serialized-object".equals(mediaType)){
+                        var bos = new ByteArrayOutputStream();
+                        var oos = new ObjectOutputStream(bos);
+                        oos.writeObject(listaItensCardapiotemCardapios);
+                        body = bos.toByteArray();
+                    } else {
+
+                        Gson gson = new Gson();
+                        String json = gson.toJson(listaItensCardapiotemCardapios);
+                        body = json.getBytes(StandardCharsets.UTF_8);
+                    }
+                    clientOS.write("HTTP/1.1 200 OK\r\n".getBytes(StandardCharsets.UTF_8));
+                    clientOS.write(("Content-type: "+mediaType+"; charset=UTF-8\r\n\r\n").getBytes(StandardCharsets.UTF_8));
+                    clientOS.write(body);
                 } else if (method.equals("GET") && requestURI.equals("/itens-cardapio/total")) {
                     logger.fine("Chamou total de itens de cardápio");
 
