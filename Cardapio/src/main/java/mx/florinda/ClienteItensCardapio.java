@@ -8,7 +8,7 @@ import java.net.http.HttpResponse;
 public class ClienteItensCardapio {
     static void main() throws Exception {
 
-        URI uri = URI.create("http://localhost:8000/itensCardapio.json");
+        URI uri = URI.create("http://localhost:8000/itens-cardapio");
 
         try(HttpClient httpClient = HttpClient.newHttpClient()){
             HttpRequest httpRequest = HttpRequest.newBuilder(uri).build();
