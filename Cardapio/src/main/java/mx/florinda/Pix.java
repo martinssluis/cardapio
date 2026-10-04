@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class Pix implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     private Long id;
     private BigDecimal valor;
