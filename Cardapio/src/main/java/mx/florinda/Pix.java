@@ -2,6 +2,7 @@ package mx.florinda;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Objects;
 
 public class Pix implements Serializable {
@@ -11,11 +12,15 @@ public class Pix implements Serializable {
     private Long id;
     private BigDecimal valor;
     private String chaveDestino;
+    private Instant dataHora;
+    private String mensagem;
 
-    public Pix(Long id, BigDecimal valor, String chaveDestino) {
+    public Pix(Long id, BigDecimal valor, String chaveDestino, Instant dataHora, String mensagem) {
         this.id = id;
         this.valor = valor;
         this.chaveDestino = chaveDestino;
+        this.dataHora = dataHora;
+        this.mensagem = mensagem;
     }
 
     public Long getId() {
@@ -42,12 +47,30 @@ public class Pix implements Serializable {
         this.chaveDestino = chaveDestino;
     }
 
+    public Instant getDataHora() {
+        return dataHora;
+    }
+
+    public void setDataHora(Instant dataHora) {
+        this.dataHora = dataHora;
+    }
+
+    public String getMensagem() {
+        return mensagem;
+    }
+
+    public void setMensagem(String mensagem) {
+        this.mensagem = mensagem;
+    }
+
     @Override
     public String toString() {
         return "Pix{" +
                 "id=" + id +
                 ", valor=" + valor +
                 ", chaveDestino='" + chaveDestino + '\'' +
+                ", dataHora=" + dataHora +
+                ", mensagem='" + mensagem + '\'' +
                 '}';
     }
 
@@ -55,11 +78,11 @@ public class Pix implements Serializable {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Pix pix = (Pix) o;
-        return Objects.equals(id, pix.id) && Objects.equals(valor, pix.valor) && Objects.equals(chaveDestino, pix.chaveDestino);
+        return Objects.equals(id, pix.id) && Objects.equals(valor, pix.valor) && Objects.equals(chaveDestino, pix.chaveDestino) && Objects.equals(dataHora, pix.dataHora) && Objects.equals(mensagem, pix.mensagem);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, valor, chaveDestino);
+        return Objects.hash(id, valor, chaveDestino, dataHora, mensagem);
     }
 }
