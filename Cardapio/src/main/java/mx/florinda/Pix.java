@@ -1,5 +1,6 @@
 package mx.florinda;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -7,6 +8,7 @@ import java.util.Objects;
 
 public class Pix implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 2L;
 
     private Long id;
@@ -15,12 +17,19 @@ public class Pix implements Serializable {
     private Instant dataHora;
     private String mensagem;
 
+
+    public Pix(){
+        System.out.println("Chamou construtor padrão!");
+    }
+
     public Pix(Long id, BigDecimal valor, String chaveDestino, Instant dataHora, String mensagem) {
         this.id = id;
         this.valor = valor;
         this.chaveDestino = chaveDestino;
         this.dataHora = dataHora;
         this.mensagem = mensagem;
+
+        System.out.println("Chamou construtor!");
     }
 
     public Long getId() {
